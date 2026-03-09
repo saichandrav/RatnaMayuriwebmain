@@ -40,17 +40,14 @@ app.use("/api/marketers", marketerRoutes);
 
 const start = async () => {
   const mongoUri = process.env.MONGODB_URI;
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpPort = process.env.SMTP_PORT;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
+  const resendApiKey = process.env.RESEND_API_KEY;
 
   if (!mongoUri) {
     throw new Error("MONGODB_URI is not set");
   }
 
-  if (!smtpHost || !smtpPort || !smtpUser || !smtpPass) {
-    throw new Error("SMTP_HOST, SMTP_PORT, SMTP_USER, and SMTP_PASS are required");
+  if (!resendApiKey) {
+    throw new Error("RESEND_API_KEY is required");
   }
 
   await mongoose.connect(mongoUri);

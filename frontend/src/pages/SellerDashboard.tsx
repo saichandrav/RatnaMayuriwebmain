@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Package, ShoppingBag, Plus, MapPin, Phone, Mail, User as UserIcon, ChevronDown, Loader2 } from "lucide-react";
+import { Package, ShoppingBag, Plus, MapPin, Phone, Mail, User as UserIcon, ChevronDown, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Layout from "@/components/layout/Layout";
 import { api, type Order } from "@/lib/api";
@@ -53,7 +53,21 @@ const SellerDashboard = () => {
   const [activeOrderCategoryTab, setActiveOrderCategoryTab] = useState<OrderCategoryTab>("new");
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [pendingStatuses, setPendingStatuses] = useState<Record<string, Order["status"]>>({});
+  const [listingImageIndex, setListingImageIndex] = useState<Record<string, number>>({});
   const editorPanelRef = useRef<HTMLElement | null>(null);
+
+  const moveListingImage = (productId: string, imageCount: number, direction: "prev" | "next") => {
+    if (imageCount <= 1) return;
+
+    setListingImageIndex(prev => {
+      const current = prev[productId] ?? 0;
+      const nextIndex = direction === "next"
+        ? (current + 1) % imageCount
+        : (current - 1 + imageCount) % imageCount;
+
+      return { ...prev, [productId]: nextIndex };
+    });
+  };
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["seller-products", user?.id],
@@ -542,9 +556,45 @@ const SellerDashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                   {products.map(product => (
                     <div key={product.id} className="bg-card rounded-2xl border border-border/60 p-4">
-                      <div className="aspect-[4/3] rounded-xl overflow-hidden bg-secondary mb-3">
-                        <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
-                      </div>
+                      {(() => {
+                        const resolvedImages = resolveProductImages(product.images || []);
+                        const safeImages = resolvedImages.length ? resolvedImages : ["/placeholder.svg"];
+                        const activeIndex = (listingImageIndex[product.id] ?? 0) % safeImages.length;
+
+                        return (
+                          <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-secondary mb-3">
+                            <img
+                              src={safeImages[activeIndex]}
+                              alt={`${product.name} image ${activeIndex + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+
+                            {safeImages.length > 1 && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => moveListingImage(product.id, safeImages.length, "prev")}
+                                  className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/65 transition-colors"
+                                  aria-label={`Previous image for ${product.name}`}
+                                >
+                                  <ChevronLeft size={16} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => moveListingImage(product.id, safeImages.length, "next")}
+                                  className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/65 transition-colors"
+                                  aria-label={`Next image for ${product.name}`}
+                                >
+                                  <ChevronRight size={16} />
+                                </button>
+                                <span className="absolute bottom-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-black/60 text-white">
+                                  {activeIndex + 1}/{safeImages.length}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })()}
                       <h3 className="font-heading font-semibold text-foreground text-sm mb-1">{product.name}</h3>
                       <p className="text-xs text-muted-foreground mb-3">
                         {product.category} · {product.subCategory}

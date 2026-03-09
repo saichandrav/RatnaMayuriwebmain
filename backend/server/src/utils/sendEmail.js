@@ -1,27 +1,19 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const getMailTransport = () => {
-  const host = process.env.SMTP_HOST?.trim();
-  const port = Number(process.env.SMTP_PORT || 0);
-  const secure = process.env.SMTP_SECURE === "true";
-  const user = process.env.SMTP_USER?.trim();
-  const pass = process.env.SMTP_PASS?.trim();
+const getResendClient = () => {
+  const apiKey = process.env.RESEND_API_KEY?.trim();
 
-  if (!host || !port || !user || !pass) {
-    throw new Error("SMTP_HOST, SMTP_PORT, SMTP_USER, and SMTP_PASS must be set");
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY must be set");
   }
 
-  return nodemailer.createTransport({
-    host,
-    port,
-    secure,
-    auth: { user, pass },
-  });
+  return new Resend(apiKey);
 };
 
 export const sendEmail = async ({ to, subject, text, html }) => {
-  const transport = getMailTransport();
-  const from = process.env.SMTP_FROM?.trim() || process.env.SMTP_USER?.trim();
+  const resend = getResendClient();
+  const supportEmail = process.env.SUPPORT_EMAIL?.trim() || "suportratnamayuri@gmail.com";
+  const from = process.env.EMAIL_FROM?.trim() || supportEmail;
 
   if (!to || !subject) {
     throw new Error("Email 'to' and 'subject' are required");
@@ -32,19 +24,25 @@ export const sendEmail = async ({ to, subject, text, html }) => {
   }
 
   if (!from) {
-    throw new Error("SMTP_FROM or SMTP_USER must be set");
+    throw new Error("EMAIL_FROM or SUPPORT_EMAIL must be set");
   }
 
   try {
-    await transport.sendMail({
+    const result = await resend.emails.send({
       from,
       to,
       subject,
       text,
       html,
+      replyTo: supportEmail,
     });
+
+    if (result?.error) {
+      console.error("Resend API returned an error", result.error);
+      throw new Error(result.error.message || "Email delivery failed");
+    }
   } catch (error) {
-    console.error("Failed to send email via SMTP", error);
+    console.error("Failed to send email via Resend", error);
     throw new Error("Email delivery failed");
   }
 };

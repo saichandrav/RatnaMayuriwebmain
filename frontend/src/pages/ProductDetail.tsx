@@ -1,10 +1,11 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, ShoppingBag, Zap, Shield, BadgeCheck, Truck, Minus, Plus, Loader2 } from 'lucide-react';
+import { ArrowLeft, Star, ShoppingBag, Zap, Shield, BadgeCheck, Truck, Minus, Plus, Loader2, CalendarClock } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Layout from '@/components/layout/Layout';
 import ProductCard from '@/components/products/ProductCard';
+import ImageGallery from '@/components/products/ImageGallery';
 import { useCanReviewProduct, useProduct, useProductReviews, useProducts } from '@/hooks/use-products';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -126,13 +127,9 @@ const ProductDetail = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="aspect-square rounded-xl overflow-hidden bg-secondary"
+            className=""
           >
-            <img
-              src={product.images[0]}
-              alt={product.name}
-              className="w-full h-full object-cover"
-            />
+            <ImageGallery images={product.images} productName={product.name} />
           </motion.div>
 
           {/* Product Info */}
@@ -200,6 +197,20 @@ const ProductDetail = () => {
                 {product.subCategory}
               </span>
             </div>
+                        {/* Expected Delivery */}
+            <div className="flex items-center gap-3 mt-5  borderrounded-lg px-4 py-3">
+              <CalendarClock className="w-5 h-5 text-green-600 shrink-0" />
+              <div>
+                <p className="text-xs text-green-9cd 00">Expected Delivery</p>
+                <p className="text-sm font-semibold text-green-800">
+                  {(() => {
+                    const d = new Date();
+                    d.setDate(d.getDate() + 10);
+                    return d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
+                  })()}
+                </p>
+              </div>
+            </div>
 
             {/* Quantity */}
             <div className="flex items-center gap-4 mb-6">
@@ -266,6 +277,8 @@ const ProductDetail = () => {
                 <span className="text-[10px] text-muted-foreground">Free Shipping</span>
               </div>
             </div>
+
+
           </motion.div>
         </div>
 

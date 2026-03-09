@@ -38,6 +38,7 @@ import RefundPolicy from "./pages/RefundPolicy";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import ProductPricing from "./pages/ProductPricing";
+import OrderConfirmed from "./pages/OrderConfirmed";
 import SupportDashboard from "./pages/support/SupportDashboard";
 
 
@@ -90,6 +91,14 @@ const App = () => (
                   element={
                     <RequireAuth>
                       <OrderInvoice />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/order-confirmed"
+                  element={
+                    <RequireAuth>
+                      <OrderConfirmed />
                     </RequireAuth>
                   }
                 />

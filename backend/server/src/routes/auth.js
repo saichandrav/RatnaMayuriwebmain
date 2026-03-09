@@ -83,6 +83,15 @@ router.post("/forgot-password", async (req, res) => {
       await sendResetOtpEmail({ to: user.email, otp, name: user.name });
     } catch (error) {
       console.error("Failed to send reset OTP", error);
+
+      // In local/dev environments, allow password reset flow to continue with OTP fallback.
+      if (process.env.NODE_ENV !== "production") {
+        return res.json({
+          message: "Email delivery unavailable. Use the OTP shown in development mode.",
+          devOtp: otp,
+        });
+      }
+
       return res.status(500).json({ message: "Failed to send reset code" });
     }
   }

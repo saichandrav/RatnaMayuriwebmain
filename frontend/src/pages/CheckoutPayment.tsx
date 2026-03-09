@@ -165,14 +165,14 @@ const CheckoutPayment = () => {
         image: product.images[0],
         order_id: paymentOrder.razorpayOrder.id,
         handler: async response => {
-          await api.verifyRazorpayPayment({
+          const verifiedOrder = await api.verifyRazorpayPayment({
             orderId: paymentOrder.order.id,
             razorpayOrderId: response.razorpay_order_id,
             razorpayPaymentId: response.razorpay_payment_id,
             razorpaySignature: response.razorpay_signature,
           });
           removeFromCart(product.id);
-          navigate('/orders', { replace: true });
+          navigate('/order-confirmed', { replace: true, state: { order: verifiedOrder.order } });
         },
         prefill: {
           name: shippingAddress.fullName,
