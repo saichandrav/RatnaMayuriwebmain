@@ -6,6 +6,7 @@ import Layout from '@/components/layout/Layout';
 import ProductCard from '@/components/products/ProductCard';
 import { categories } from '../data/products';
 import { useProducts } from '@/hooks/use-products';
+import SEO from '@/components/SEO';
 
 type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'rating';
 
@@ -99,6 +100,12 @@ const Products = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Browse Products"
+        description="Explore our collection of handcrafted jewellery, silk sarees, and traditional Indian fashion at Ratnamayuri."
+        keywords="buy jewellery online, silk sarees, bridal jewellery, temple jewellery, Indian fashion"
+        canonical="https://ratnamayuri.live/products"
+      />
       <div className="container mx-auto px-4 py-6 pb-24 lg:pb-12">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-xs text-muted-foreground mb-6">

@@ -38,7 +38,7 @@ router.post("/", requireAuth, async (req, res) => {
     });
 
     const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = 0;
+    const shipping = subtotal >= 5000 ? 0 : 20;
     const total = subtotal + shipping;
 
     const order = await Order.create({

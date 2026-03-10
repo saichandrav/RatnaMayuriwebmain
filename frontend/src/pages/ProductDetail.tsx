@@ -12,6 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import type { CheckoutItem } from '@/lib/types';
 import { api } from '@/lib/api';
 import { toast } from '@/components/ui/sonner';
+import SEO from '@/components/SEO';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -112,6 +113,13 @@ const ProductDetail = () => {
 
   return (
     <Layout>
+      {product && (
+        <SEO
+          title={product.name}
+          description={product.description?.slice(0, 160) || `Buy ${product.name} at Ratnamayuri`}
+          canonical={`https://ratnamayuri.live/product/${product.id}`}
+        />
+      )}
       <div className="container mx-auto px-4 py-6 pb-24 lg:pb-12">
         {/* Back button */}
         <button

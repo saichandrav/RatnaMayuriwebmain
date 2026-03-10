@@ -110,7 +110,7 @@ const CheckoutDelivery = () => {
 
   const { product, quantity } = checkoutItem;
   const itemTotal = product.price * quantity;
-  const shipping = itemTotal >= 5000 ? 0 : 299;
+  const shipping = itemTotal >= 5000 ? 0 : 20;
 
   const validate = () => {
     const e: Partial<ShippingAddress> = {};

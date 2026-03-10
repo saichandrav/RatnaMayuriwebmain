@@ -1,8 +1,14 @@
 import Layout from "@/components/layout/Layout";
+import SEO from "@/components/SEO";
 
 const Contact = () => {
   return (
     <Layout>
+      <SEO
+        title="Contact Us"
+        description="Get in touch with Ratnamayuri for support, orders, and enquiries. Email, phone, and address available."
+        canonical="https://ratnamayuri.live/contact"
+      />
       <div className="container mx-auto px-4 py-10 max-w-4xl">
         <h1 className="text-3xl font-heading font-bold text-foreground mb-4">Contact</h1>
         <div className="space-y-3 text-sm text-muted-foreground">

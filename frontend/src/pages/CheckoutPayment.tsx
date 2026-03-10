@@ -109,7 +109,7 @@ const CheckoutPayment = () => {
 
   const { product, quantity } = checkoutItem;
   const itemTotal = product.price * quantity;
-  const shipping = 0;
+  const shipping = itemTotal >= 5000 ? 0 : 20;
   const couponSavings = appliedCoupon
     ? Math.round((itemTotal * appliedCoupon.discount) / 100)
     : 0;
@@ -342,7 +342,9 @@ const CheckoutPayment = () => {
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Shipping</span>
-                  <span className="font-medium text-green-600">FREE</span>
+                  <span className={`font-medium ${shipping === 0 ? 'text-green-600' : ''}`}>
+                    {shipping === 0 ? 'FREE' : `₹${shipping}`}
+                  </span>
                 </div>
                 {appliedCoupon && (
                   <div className="flex justify-between text-accent-foreground">

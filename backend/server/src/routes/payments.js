@@ -73,7 +73,7 @@ router.post("/razorpay/order", requireAuth, async (req, res) => {
 
     const orderItems = await buildOrderItems(items);
     const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = 0;
+    const shipping = subtotal >= 5000 ? 0 : 20;
     const preDiscountTotal = subtotal + shipping;
     let total = preDiscountTotal;
     let couponDiscount = 0;

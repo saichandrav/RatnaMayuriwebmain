@@ -31,7 +31,7 @@ const Cart = () => {
     );
   }
 
-  const shipping = 0;
+  const shipping = total >= 5000 ? 0 : 20;
   const grandTotal = total + shipping;
 
   const handleCheckout = () => {

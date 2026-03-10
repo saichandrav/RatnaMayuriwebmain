@@ -56,7 +56,7 @@ const CheckoutReview = () => {
 
   const { product, quantity } = checkoutItem;
   const itemTotal = product.price * quantity;
-  const shipping = 0;
+  const shipping = itemTotal >= 5000 ? 0 : 20;
   const grandTotal = itemTotal + shipping;
 
   const handleStepClick = (stepIndex: 0 | 1 | 2) => {
